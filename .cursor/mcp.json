@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "filesystem-wsl": {
+      "command": "wsl",
+      "args": [
+        "bash", "-lc",
+        "npx -y @modelcontextprotocol/server-filesystem",
+        "--directory", "/home/garnize/projects/sghss-api",
+        "--directory", "/home/garnize/projects/sghss-api/docs:ro"
+      ]
+    },
+    "commands-wsl": {
+      "command": "wsl",
+      "args": ["bash", "-lc", "npx -y mcp-server-commands"],
+      "env": {
+        "MCP_COMMANDS_WORKDIR": "/home/garnize/projects/sghss-api"
+      }
+    }
+  }
+}

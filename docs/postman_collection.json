@@ -1,0 +1,144 @@
+{
+  "info": {
+    "name": "SGHSS API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Coleção de endpoints da API SGHSS (Laravel 12 + Sanctum + SQLite)."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.request.headers.add({ key: 'Accept', value: 'application/json' });"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Aluno",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/aluno", "host": ["{{baseUrl}}"], "path": ["api","aluno"] }
+      }
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api","auth","register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin\",\n  \"email\": \"admin@local\",\n  \"password\": \"admin123\",\n  \"role\": \"ADMIN\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@local\",\n  \"password\": \"admin123\"\n}" }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "",
+                  "// Check status code",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "// Set token in collection variable",
+                  "pm.collectionVariables.set(\"token\", response.token);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/api/me", "host": ["{{baseUrl}}"], "path": ["api","me"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/api/auth/logout", "host": ["{{baseUrl}}"], "path": ["api","auth","logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pacientes",
+      "item": [
+        { "name": "Listar", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/pacientes", "host": ["{{baseUrl}}"], "path": ["api","pacientes"] } } },
+        { "name": "Criar", "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/pacientes", "host": ["{{baseUrl}}"], "path": ["api","pacientes"] }, "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Fulano\",\n  \"cpf\": \"00000000000\",\n  \"data_nasc\": \"1990-01-01\",\n  \"contato\": \"(11) 99999-9999\"\n}" } } },
+        { "name": "Mostrar", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/pacientes/1", "host": ["{{baseUrl}}"], "path": ["api","pacientes","1"] } } },
+        { "name": "Atualizar", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/pacientes/1", "host": ["{{baseUrl}}"], "path": ["api","pacientes","1"] }, "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Fulano Atualizado\"\n}" } } },
+        { "name": "Excluir", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/pacientes/1", "host": ["{{baseUrl}}"], "path": ["api","pacientes","1"] } } }
+      ]
+    },
+    {
+      "name": "Profissionais",
+      "item": [
+        { "name": "Listar", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/profissionais", "host": ["{{baseUrl}}"], "path": ["api","profissionais"] } } },
+        { "name": "Criar", "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/profissionais", "host": ["{{baseUrl}}"], "path": ["api","profissionais"] }, "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Dra. Teste\",\n  \"conselho\": \"CRM 123\",\n  \"especialidade\": \"Clínico Geral\"\n}" } } },
+        { "name": "Mostrar", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/profissionais/1", "host": ["{{baseUrl}}"], "path": ["api","profissionais","1"] } } },
+        { "name": "Atualizar", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/profissionais/1", "host": ["{{baseUrl}}"], "path": ["api","profissionais","1"] }, "body": { "mode": "raw", "raw": "{\n  \"especialidade\": \"Cardiologia\"\n}" } } },
+        { "name": "Excluir", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/profissionais/1", "host": ["{{baseUrl}}"], "path": ["api","profissionais","1"] } } }
+      ]
+    },
+    {
+      "name": "Consultas",
+      "item": [
+        { "name": "Listar", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/consultas", "host": ["{{baseUrl}}"], "path": ["api","consultas"] } } },
+        { "name": "Criar", "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/consultas", "host": ["{{baseUrl}}"], "path": ["api","consultas"] }, "body": { "mode": "raw", "raw": "{\n  \"paciente_id\": 1,\n  \"profissional_id\": 1,\n  \"inicio\": \"2025-10-01T10:00:00\",\n  \"fim\": \"2025-10-01T11:00:00\"\n}" } } },
+        { "name": "Atualizar", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/consultas/1", "host": ["{{baseUrl}}"], "path": ["api","consultas","1"] }, "body": { "mode": "raw", "raw": "{\n  \"inicio\": \"2025-10-01T10:30:00\",\n  \"fim\": \"2025-10-01T11:30:00\"\n}" } } },
+        { "name": "Mostrar", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/consultas/1", "host": ["{{baseUrl}}"], "path": ["api","consultas","1"] } } },
+        { "name": "Excluir", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/consultas/1", "host": ["{{baseUrl}}"], "path": ["api","consultas","1"] } } }
+      ]
+    },
+    {
+      "name": "Prontuários",
+      "item": [
+        { "name": "Listar", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/prontuarios", "host": ["{{baseUrl}}"], "path": ["api","prontuarios"] } } },
+        { "name": "Por Paciente", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/prontuarios/paciente/1", "host": ["{{baseUrl}}"], "path": ["api","prontuarios","paciente","1"] } } },
+        { "name": "Criar (MEDICO)", "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/prontuarios", "host": ["{{baseUrl}}"], "path": ["api","prontuarios"] }, "body": { "mode": "raw", "raw": "{\n  \"paciente_id\": 1,\n  \"texto\": \"Anotação clínica\",\n  \"anexos\": []\n}" } } },
+        { "name": "Mostrar", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": { "raw": "{{baseUrl}}/api/prontuarios/1", "host": ["{{baseUrl}}"], "path": ["api","prontuarios","1"] } } }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000" },
+    { "key": "token", "value": "" }
+  ]
+}
+
+

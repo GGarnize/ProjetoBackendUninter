@@ -12,8 +12,9 @@ Route::middleware('auth:sanctum')->group(function(){
   Route::post('/auth/logout',[AuthController::class,'logout']);
 
   Route::apiResource('pacientes', PacienteController::class);
-  Route::apiResource('profissionais', ProfissionalController::class);
-
+  Route::apiResource('profissionais', ProfissionalController::class)
+       ->parameters(['profissionais' => 'profissional']);
+       
   Route::get('prontuarios/paciente/{id}', [ProntuarioController::class,'porPaciente']);
   Route::apiResource('prontuarios', ProntuarioController::class)->only(['index','store','show']);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProntuarioRequest;
 use App\Models\Prontuario;
+use Illuminate\Http\Request;
 
 class ProntuarioController extends Controller
 {
@@ -13,11 +14,25 @@ class ProntuarioController extends Controller
         $prontuario = Prontuario::create($v + ['autor_id'=>$r->user()->id]);
         return response()->json($prontuario, 201);
     }
-    public function porPaciente(int $id){
-        return Prontuario::where('paciente_id',$id)->latest()->get();
+    public function porPaciente(Request $request, int $id){
+        abort_unless($request->user()->role === 'MEDICO', 403);
+        return Prontuario::where('paciente_id', $id)
+            ->where('autor_id', $request->user()->id)
+            ->latest()
+            ->get();
     }
-    public function index(){ return Prontuario::latest()->paginate(20); }
-    public function show(Prontuario $prontuario){ return $prontuario; }
+    public function index(Request $request){
+        abort_unless($request->user()->role === 'MEDICO', 403);
+        return Prontuario::where('autor_id', $request->user()->id)
+            ->latest()
+            ->paginate(20);
+    }
+    public function show(Request $request, Prontuario $prontuario){
+        if ($request->user()->role !== 'MEDICO' || $prontuario->autor_id !== $request->user()->id) {
+            abort(404);
+        }
+        return $prontuario;
+    }
 }
 
 
